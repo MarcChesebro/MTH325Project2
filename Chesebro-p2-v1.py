@@ -13,6 +13,10 @@ class edge(object):
         self.B = vertB
         self.w = weight
 
+class vertex(object):
+    def __init__(self, label):
+        self.label = label
+        self.pathLength = -1
 
 #function to find the degree of a vertex given a name
 #and list of edges
@@ -29,6 +33,12 @@ def contains(val, list):
         if i == val:
             return True
     return False
+
+def labelToVertex(label, vertList):
+    for v in vertList:
+        if v.label == label:
+            return v
+    return -1
 
 def findMinTree(vertList, edgeList):
     sortEdge = sorted(edgeList, key=lambda edge: edge.age)
@@ -47,8 +57,26 @@ def findMinTree(vertList, edgeList):
     return tree
 
 def findMinLength(VertList, edgeList):
-    vertD = [-1 for x in range(len(VertList))]
+    i = 0
+    curr = VertList[i]
+    vertVisited = [curr]
 
+    while(len(vertVisited) < len(VertList)):
+
+        # find all vert next to it
+        for e in edgeList:
+            if e.A.label == curr.label:
+                if e.B.pathLength >= (curr.pathLength + e.w):
+                    e.B.pathLength = curr.pathLength + e.w
+
+            elif e.B.label == curr.label:
+                if e.A.pathLength >= (curr.pathLength + e.w):
+                    e.A.pathLength = curr.pathLength + e.w
+
+        # pick vert to visit
+
+        # add vert to list of Visited verts
+        
 
 #get user input
 userVerts = input("enter the vertices(a, b, c): \n")
@@ -58,13 +86,17 @@ userEdges = input("enter the edges(a-b, b-c): \n")
 userVerts = userVerts.replace(" ", "")
 userEdges = userEdges.replace(" ", "")
 
-verts = userVerts.split(',')
+vertsStr = userVerts.split(',')
 edgesStr = userEdges.split(',')
+
+verts = []
+for str in vertsStr:
+    verts.append(vertex(str))
 
 #turn the edge strings into a list of edge objects
 edges = []
 for str in edgesStr:
     tempV = str.split('-')
-    edges.append(edge(tempV[0], tempV[1], tempV[2]))
+    edges.append(edge(labelToVertex(tempV[0], verts),labelToVertex(tempV[1], verts) , int(tempV[2])))
 
 findMinLength(verts, edges)
