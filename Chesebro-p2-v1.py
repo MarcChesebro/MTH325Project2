@@ -8,9 +8,10 @@
 
 #edge object containing the start and end point
 class edge(object):
-    def __init__(self, vertA, vertB):
+    def __init__(self, vertA, vertB, weight):
         self.A = vertA
         self.B = vertB
+        self.w = weight
 
 
 #function to find the degree of a vertex given a name
@@ -29,6 +30,22 @@ def contains(val, list):
             return True
     return False
 
+def findMinTree(vertList, edgeList):
+    sortEdge = sorted(edgeList, key=lambda edge: edge.age)
+    tree = []
+    verts = []
+
+    for edge in edgeList:
+        if(not(contains(edge.A, verts) and contains(edge.B, verts))):
+            if(contains(edge.A, verts)):
+                verts.append(edge.B)
+                tree.append(edge)
+            elif(contains(edge.B, verts)):
+                verts.append(edge.A)
+                tree.append(edge)
+    print(tree)
+    return tree
+
 #get user input
 userVerts = input("enter the vertices(a, b, c): \n")
 userEdges = input("enter the edges(a-b, b-c): \n")
@@ -44,4 +61,4 @@ edgesStr = userEdges.split(',')
 edges = []
 for str in edgesStr:
     tempV = str.split('-')
-    edges.append(edge(tempV[0], tempV[1]))
+    edges.append(edge(tempV[0], tempV[1], tempV[2]))
