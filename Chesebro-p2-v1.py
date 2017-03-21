@@ -46,6 +46,10 @@ def findMinTree(vertList, edgeList):
     print(tree)
     return tree
 
+def findMinLength(VertList, edgeList):
+    vertD = [-1 for x in range(len(VertList))]
+
+
 #get user input
 userVerts = input("enter the vertices(a, b, c): \n")
 userEdges = input("enter the edges(a-b, b-c): \n")
@@ -62,3 +66,5 @@ edges = []
 for str in edgesStr:
     tempV = str.split('-')
     edges.append(edge(tempV[0], tempV[1], tempV[2]))
+
+findMinLength(verts, edges)
