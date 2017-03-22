@@ -60,23 +60,35 @@ def findMinLength(VertList, edgeList):
     i = 0
     curr = VertList[i]
     vertVisited = [curr]
+    curr.pathLength = 0
 
-    while(len(vertVisited) < len(VertList)):
+    while len(vertVisited) < len(VertList):
 
         # find all vert next to it
         for e in edgeList:
             if e.A.label == curr.label:
-                if e.B.pathLength >= (curr.pathLength + e.w):
+                if e.B.pathLength >= (curr.pathLength + e.w) or e.B.pathLength == -1:
                     e.B.pathLength = curr.pathLength + e.w
-
-            elif e.B.label == curr.label:
-                if e.A.pathLength >= (curr.pathLength + e.w):
+            if e.B.label == curr.label:
+                if e.A.pathLength >= (curr.pathLength + e.w) or e.A.pathLength == -1:
                     e.A.pathLength = curr.pathLength + e.w
 
         # pick vert to visit
+        if len(vertVisited) < len(VertList):
+            min = -1
+            smallest = curr
+            for v in VertList:
+                if not contains(v, vertVisited) and v.pathLength != -1:
+                    if min == -1:
+                        min = v.pathLength
+                        smallest = v
+                    elif v.pathLength < min:
+                        min = v.pathLength
+                        smallest = v
 
-        # add vert to list of Visited verts
-        
+            curr = smallest
+            # add vert to list of Visited verts
+            vertVisited.append(curr)
 
 #get user input
 userVerts = input("enter the vertices(a, b, c): \n")
@@ -97,6 +109,9 @@ for str in vertsStr:
 edges = []
 for str in edgesStr:
     tempV = str.split('-')
-    edges.append(edge(labelToVertex(tempV[0], verts),labelToVertex(tempV[1], verts) , int(tempV[2])))
+    edges.append(edge(labelToVertex(tempV[0], verts), labelToVertex(tempV[1], verts) , int(tempV[2])))
 
 findMinLength(verts, edges)
+
+for v in verts:
+    print(v.label, v.pathLength)
