@@ -41,20 +41,32 @@ def labelToVertex(label, vertList):
     return -1
 
 def findMinTree(vertList, edgeList):
-    sortEdge = sorted(edgeList, key=lambda edge: edge.age)
-    tree = []
-    verts = []
+    i = 0
+    curr = vertList[i]
+    vertVisited = [curr]
+    minTree = []
 
-    for edge in edgeList:
-        if(not(contains(edge.A, verts) and contains(edge.B, verts))):
-            if(contains(edge.A, verts)):
-                verts.append(edge.B)
-                tree.append(edge)
-            elif(contains(edge.B, verts)):
-                verts.append(edge.A)
-                tree.append(edge)
-    print(tree)
-    return tree
+    while len(vertVisited) < len(vertList):
+
+        #find the cheapest vert next to visited verts
+        nextVert = -1
+        nextEdge = -1
+        min = -1
+        for e in edgeList:
+            if contains(e.A, vertVisited) and not contains(e.B, vertVisited):
+                if e.w < min or min == -1:
+                    min = e.w
+                    nextVert = e.B
+                    nextEdge = e
+            if contains(e.B, vertVisited) and not contains(e.A, vertVisited):
+                if e.w < min or min == -1:
+                    min = e.w
+                    nextVert = e.A
+                    nextEdge = e
+        vertVisited.append(nextVert)
+        minTree.append(nextEdge)
+
+    return minTree
 
 def findMinLength(VertList, edgeList):
     i = 0
@@ -92,7 +104,7 @@ def findMinLength(VertList, edgeList):
 
 #get user input
 userVerts = input("enter the vertices(a, b, c): \n")
-userEdges = input("enter the edges(a-b, b-c): \n")
+userEdges = input("enter the edges(a-b-1, b-c-2): \n")
 
 #get rid of spaces and split on commas
 userVerts = userVerts.replace(" ", "")
@@ -115,3 +127,7 @@ findMinLength(verts, edges)
 
 for v in verts:
     print(v.label, v.pathLength)
+
+minTree = findMinTree(verts, edges)
+for e in minTree:
+    print(e.A.label + "-" + e.B.label)
